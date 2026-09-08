@@ -1,0 +1,29 @@
+name: Pipeline CI - Linter e Testes
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependências
+        run: pip install -r requirements-dev.txt
+
+      - name: Executar Linter (flake8)
+        run: flake8 src/ tests/
+
+      - name: Executar Testes (pytest)
+        run: pytest tests/ -v

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  PORT: "8080"
+  # Arquivo do historico, dentro do volume persistente (PVC) montado em /data
+  HISTORICO_PATH: "/data/historico.json"
+# O Secret (app-secret) NAO fica no Git. Ele e criado fora do repositorio:
+#   - no CI/CD: a partir do GitHub Secrets (ver .github/workflows/cd.yml)
+#   - local:    kubectl create secret generic app-secret \
+#                 --from-literal=ADMIN_TOKEN='<defina-um-valor>'
+# Modelo sem valor real em k8s/exemplos/secret.example.yml

@@ -16,7 +16,7 @@ fica no GitHub Secrets.
 | Execução manual com `version = 1.0.0` (rollback/reimplantação) | Deploy de homologação: sucesso (imagem baixada do GHCR, manifestos aplicados e teste de fumaça aprovado) |
 
 Imagem publicada: `ghcr.io/gaveta-cmd/integracao-continua-devops`, com as tags
-`1.0.0`, `1.0` e `sha-<commit>`.
+`1.0.0`, `1.0`, `sha-<commit>` e `latest`.
 
 ## 0. Ambiente
 

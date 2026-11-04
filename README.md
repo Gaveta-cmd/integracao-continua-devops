@@ -59,7 +59,7 @@ Operações aceitas: `soma`, `subtracao`, `multiplicacao`, `divisao` (também
 ```mermaid
 flowchart LR
     A["Pull Request ou push na main"] --> CI["CI: flake8 + pytest"]
-    T["Tag vX.Y.Z"] --> TE["Testes"] --> B["Build e push no GHCR<br/>tags X.Y.Z, X.Y e sha-..."] --> D["Deploy de homologação<br/>cluster kind + kubectl apply + teste de fumaça"]
+    T["Tag vX.Y.Z"] --> TE["Testes"] --> B["Build e push no GHCR<br/>tags X.Y.Z, X.Y, sha-... e latest"] --> D["Deploy de homologação<br/>cluster kind + kubectl apply + teste de fumaça"]
     R["Execução manual<br/>version = X.Y.Z"] -.->|"rollback"| D
 ```
 
@@ -67,8 +67,8 @@ flowchart LR
   roda o linter (flake8) e os testes (pytest). A `main` é protegida: exige
   Pull Request, 1 aprovação e o check `build-and-test`.
 - **CD** (`.github/workflows/cd.yml`): ao criar uma tag `vX.Y.Z`, roda os
-  testes, constrói a imagem e a publica no GHCR com as tags `X.Y.Z`, `X.Y` e
-  `sha-<commit>`. Em seguida faz o deploy num cluster Kubernetes efêmero
+  testes, constrói a imagem e a publica no GHCR com as tags `X.Y.Z`, `X.Y`,
+  `sha-<commit>` e `latest` (esta última é gerada automaticamente). Em seguida faz o deploy num cluster Kubernetes efêmero
   (kind), aplica os manifestos de `k8s/` e executa um teste de fumaça.
 - **Versionamento semântico:** cada release é uma tag Git e uma imagem
   imutável; a tag `sha-...` liga a imagem ao commit exato que a gerou.

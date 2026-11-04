@@ -50,7 +50,8 @@ O Dockerfile e os manifestos ja assumem este contrato. Nao precisa mexer em
    - **Autocura:** `kubectl delete pod <um-pod>` e o cluster recria; 3
      replicas de volta.
    - **Escala:** `kubectl scale deployment/calculadora-deployment --replicas=5`
-     e atualizar a pagina vendo pods diferentes respondendo.
+     e mostrar pods diferentes respondendo (ver "Ver o balanceamento" no
+     roteiro abaixo).
    - **Rollback:** seguir `docs/ROLLBACK.md` (versao `1.1.0` com defeito ->
      volta para `1.0.0`).
 
@@ -62,7 +63,27 @@ kubectl create secret generic app-secret --from-literal=ADMIN_TOKEN='troque-isto
 kubectl apply -f k8s/
 kubectl set image deployment/calculadora-deployment calculadora=calculadora:1.0.0
 kubectl get pods -w
-# abrir http://localhost:30080
+```
+
+Abrir no navegador (o NodePort `30080` nao fica acessivel em `localhost` no
+Kubernetes do Docker Desktop; use o port-forward):
+
+```bash
+kubectl port-forward service/calculadora-service 8080:8080
+# abrir http://localhost:8080
+```
+
+O port-forward fixa um unico Pod, entao o selo "Atendido pelo Pod" nao muda.
+
+### Ver o balanceamento (por dentro do cluster)
+
+Chama o Service 30 vezes e conta qual Pod respondeu (Pods diferentes
+aparecem; com 5 replicas, ate 5). Rodar no Git Bash ou WSL (usa `sort` e
+`uniq`):
+
+```bash
+POD=$(kubectl get pods -l app=calculadora -o jsonpath='{.items[0].metadata.name}')
+kubectl exec $POD -- sh -c 'for i in $(seq 1 30); do wget -qO- http://calculadora-service:8080/api/info; echo; done' | sort | uniq -c
 ```
 
 Limpeza ao terminar: `kubectl delete -f k8s/` e

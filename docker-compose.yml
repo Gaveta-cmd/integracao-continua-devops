@@ -1,0 +1,30 @@
+# Orquestração local com Docker Compose (alternativa ao Kubernetes).
+#
+# O ADMIN_TOKEN nunca fica neste arquivo: crie um .env local (ignorado pelo
+# Git) com a linha ADMIN_TOKEN=troque-isto. Todos os comandos abaixo, inclusive
+# "ps" e "down", precisam dele.
+#
+# Uso local (constrói a imagem a partir do código):
+#   docker compose up --build -d
+#
+# Uso com a imagem publicada no GHCR (deploy e rollback por tag):
+#   REGISTRY_IMAGE=ghcr.io/gaveta-cmd/integracao-continua-devops \
+#   IMAGE_TAG=1.0.0 docker compose pull
+#   REGISTRY_IMAGE=ghcr.io/gaveta-cmd/integracao-continua-devops \
+#   IMAGE_TAG=1.0.0 docker compose up -d
+services:
+  app:
+    image: ${REGISTRY_IMAGE:-calculadora}:${IMAGE_TAG:-local}
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      HISTORICO_PATH: /data/historico.json
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?Defina ADMIN_TOKEN no ambiente ou em um arquivo .env}
+    volumes:
+      - historico_dados:/data
+    restart: on-failure
+
+volumes:
+  historico_dados:

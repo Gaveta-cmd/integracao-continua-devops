@@ -78,11 +78,15 @@ O port-forward fixa um unico Pod, entao o selo "Atendido pelo Pod" nao muda.
 ### Ver o balanceamento (por dentro do cluster)
 
 Chama o Service 30 vezes e conta qual Pod respondeu (Pods diferentes
-aparecem; com 5 replicas, ate 5). Rodar no Git Bash ou WSL (usa `sort` e
+aparecem; com 5 replicas, ate 5). Espere uns 10 segundos apos subir ou
+escalar, para todos os Pods ficarem prontos. O `awk` escolhe um Pod em
+execucao (logo apos o `set image` a lista ainda pode ter Pods em
+encerramento). Rodar no Git Bash ou WSL (usa `sort` e
 `uniq`):
 
 ```bash
-POD=$(kubectl get pods -l app=calculadora -o jsonpath='{.items[0].metadata.name}')
+kubectl rollout status deployment/calculadora-deployment
+POD=$(kubectl get pods -l app=calculadora --no-headers | awk '$2=="1/1" && $3=="Running"{print $1; exit}')
 kubectl exec $POD -- sh -c 'for i in $(seq 1 30); do wget -qO- http://calculadora-service:8080/api/info; echo; done' | sort | uniq -c
 ```
 

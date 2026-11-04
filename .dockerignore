@@ -1,0 +1,16 @@
+.git
+.github
+.gitignore
+.flake8
+.dockerignore
+__pycache__
+*.pyc
+.pytest_cache
+tests
+docs
+k8s
+README.md
+requirements-dev.txt
+pytest.ini
+historico.json
+.env
